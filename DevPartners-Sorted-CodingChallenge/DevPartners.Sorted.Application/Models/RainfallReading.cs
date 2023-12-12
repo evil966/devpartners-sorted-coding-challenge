@@ -2,7 +2,7 @@
 
 public class RainfallReading
 {
-    public string DateMeasured { get; set; } = default!;
-    public double AmountMeasured { get; set; } = 0;
+    public string? DateMeasured { get; set; }
+    public double AmountMeasured { get; set; }
 
 }

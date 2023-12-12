@@ -2,6 +2,8 @@ using DevPartners.Sorted.Api.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient("rainfallservice");
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -36,6 +38,7 @@ builder.Services
         .Configure<RainfallApiEndpointSettings>
             (builder.Configuration.GetSection("RainfallApiEndpointSettings"));
 
+builder.Services.AddScopedAndTransientServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

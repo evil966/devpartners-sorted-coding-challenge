@@ -1,5 +1,8 @@
 ﻿using DevPartners.Sorted.Api.Configurations;
 using DevPartners.Sorted.Application.Models;
+using DevPartners.Sorted.Application.Models.Errors;
+using DevPartners.Sorted.Application.Services;
+using DevPartners.Sorted.Core.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +17,17 @@ namespace DevPartners.Sorted.Api.Controllers;
 [Produces("application/json")]
 public class RainfallController : ControllerBase
 {
+    private readonly IRainfallServices _services;
     public RainfallApiEndpointSettings Settings { get; set; }
 
-    public RainfallController(IOptions<RainfallApiEndpointSettings> settings)
+    public RainfallController
+    (
+        IOptions<RainfallApiEndpointSettings> settings,
+        IRainfallServices services
+    )
     {
         Settings = settings.Value;
+        _services = services;
     }
 
     [HttpGet("rainfall/id/{stationId}/readings")]
@@ -35,17 +44,33 @@ public class RainfallController : ControllerBase
     public async Task<IActionResult> Get(int stationId)
     {
         var uri = new Uri(Settings.Url.Replace("$stationid", stationId.ToString()));
+        var rainfall = await _services.Get(uri, stationId);
 
-        var items = new RainfallReadingResponse
+        if (rainfall.Items.Count() == 0)
         {
-            Readings = new[] 
-            {
-                new RainfallReading { AmountMeasured = 7.6, DateMeasured = "2023-12-12T06:00:00Z" },
-                new RainfallReading { AmountMeasured = 8.26, DateMeasured = "2023-12-12T05:45:00Z" }
-            }
-        };
+            return new ObjectResult(
+                        new ErrorResponse
+                        {
+                            Message = "No readings found for the specified stationId",
+                            Detail = new List<ErrorDetail>()
+                        }) 
+                    { StatusCode = StatusCodes.Status404NotFound };
+        }
 
-        return new ObjectResult(items) { StatusCode = StatusCodes.Status200OK };
+        var rainfallReadings = rainfall.Items.Select(r =>
+            new RainfallReading
+            {
+                AmountMeasured = r.Value,
+                DateMeasured = r.DateTime
+            });
+
+
+        return new ObjectResult(
+                    new RainfallReadingResponse
+                    {
+                        Readings = rainfallReadings.ToList()
+                    }) 
+                { StatusCode = StatusCodes.Status200OK };
     }
 }
 

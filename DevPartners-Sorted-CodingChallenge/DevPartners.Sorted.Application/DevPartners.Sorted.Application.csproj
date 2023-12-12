@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DevPartners.Sorted.Core\DevPartners.Sorted.Core.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\DevPartners.Sorted.Core\DevPartners.Sorted.Core.csproj" />
   </ItemGroup>
 
 </Project>
