@@ -1,4 +1,5 @@
 ﻿using DevPartners.Sorted.Api.Configurations;
+using DevPartners.Sorted.Application.Exceptions;
 using DevPartners.Sorted.Application.Models;
 using DevPartners.Sorted.Application.Models.Errors;
 using DevPartners.Sorted.Application.Services;
@@ -36,37 +37,54 @@ public class RainfallController : ControllerBase
     [SwaggerResponse(400, "Invalid request", typeof(ErrorResponse))]
     [SwaggerResponse(404, "No readings found for the specified stationId", typeof(ErrorResponse))]
     [SwaggerResponse(500, "Internal server error", typeof(ErrorResponse))]
-    public async Task<IActionResult> Get(int stationId)
+    public async Task<IActionResult> Get(int stationId, [FromQuery] string count="10")
     {
-        var uri = new Uri(Settings.Url.Replace("$stationid", stationId.ToString()));
-        var rainfall = await _services.Get(uri, stationId);
-
-        if (rainfall.Items.Count() == 0)
+        try
         {
+            var uri = new Uri(Settings.Url.Replace("$stationid", stationId.ToString()));
+            var rainfall = await _services.Get(uri, stationId, count);
+
+            if (rainfall.StatusCode != StatusCodes.Status200OK)
+            {
+                throw new RainfallServiceException($"{rainfall.StatusCode}|{rainfall.Message}");
+            }
+
+            if (rainfall.Readings.Items.Count() == 0)
+            {
+                throw new RainfallServiceException($"{StatusCodes.Status404NotFound}|No readings found for the specified stationId");
+            }
+
+            var rainfallReadings = rainfall.Readings.Items.Select(r =>
+                new RainfallReading
+                {
+                    AmountMeasured = r.Value,
+                    DateMeasured = r.DateTime
+                });
+
             return new ObjectResult(
-                        new ErrorResponse
+                        new RainfallReadingResponse
                         {
-                            Message = "No readings found for the specified stationId",
-                            Detail = new List<ErrorDetail>()
-                        }) 
-                    { StatusCode = StatusCodes.Status404NotFound };
+                            Readings = rainfallReadings.ToList()
+                        })
+            { StatusCode = StatusCodes.Status200OK };
+
+
+        } 
+        catch (Exception ex)
+        {
+            var error = ex.Message.Split('|');
+
+            return new ObjectResult(
+                            new ErrorResponse
+                            {
+                                Message = error[1],
+                                Detail = new List<ErrorDetail>()
+                            })
+            { StatusCode = int.Parse(error[0]) };
         }
 
-        var rainfallReadings = rainfall.Items.Select(r =>
-            new RainfallReading
-            {
-                AmountMeasured = r.Value,
-                DateMeasured = r.DateTime
-            });
-
-
-        return new ObjectResult(
-                    new RainfallReadingResponse
-                    {
-                        Readings = rainfallReadings.ToList()
-                    }) 
-                { StatusCode = StatusCodes.Status200OK };
     }
+
 }
 
 

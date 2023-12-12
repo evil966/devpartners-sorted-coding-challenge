@@ -1,8 +1,9 @@
-﻿using DevPartners.Sorted.Core.Entities;
+﻿using DevPartners.Sorted.Application.Models;
+using DevPartners.Sorted.Core.Entities;
 
 namespace DevPartners.Sorted.Application.Services;
 
 public interface IRainfallServices
 {
-    Task<Readings?> Get(Uri endpoint, int stationId);
+    Task<ApiCallResult> Get(Uri endpoint, int stationId, string count);
 }
