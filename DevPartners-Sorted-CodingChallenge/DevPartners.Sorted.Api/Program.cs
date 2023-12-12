@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components.Web;
+using DevPartners.Sorted.Api.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +21,21 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder => builder
+        .SetIsOriginAllowedToAllowWildcardSubdomains()
+        .WithOrigins("http://localhost:3000")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .Build());
+});
+
+builder.Services
+        .Configure<RainfallApiEndpointSettings>
+            (builder.Configuration.GetSection("RainfallApiEndpointSettings"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,9 +46,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
+app.UseCors();
 
 app.Run();

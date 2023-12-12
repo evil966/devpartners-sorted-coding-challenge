@@ -1,8 +1,11 @@
-﻿using DevPartners.Sorted.Application.Models;
+﻿using DevPartners.Sorted.Api.Helpers;
+using DevPartners.Sorted.Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
 using static System.Net.WebRequestMethods;
 
 namespace DevPartners.Sorted.Api.Controllers;
@@ -11,11 +14,13 @@ namespace DevPartners.Sorted.Api.Controllers;
 [Produces("application/json")]
 public class RainfallController : ControllerBase
 {
-    public RainfallController()
+    public RainfallApiEndpointSettings Settings { get; set; }
+
+    public RainfallController(IOptions<RainfallApiEndpointSettings> settings)
     {
-        
+        Settings = settings.Value;
     }
-    
+
     [HttpGet("rainfall/id/{stationId}/readings")]
     [SwaggerOperation(   
         Summary = "Get rainfall readings by station Id", 
@@ -29,6 +34,8 @@ public class RainfallController : ControllerBase
     [SwaggerResponse(500, "Internal server error", typeof(ErrorResponse))]
     public async Task<IActionResult> Get(int stationId)
     {
+        var uri = new Uri(Settings.Url.Replace("$stationid", stationId.ToString()));
+
         var items = new RainfallReadingResponse
         {
             Readings = new[] 
