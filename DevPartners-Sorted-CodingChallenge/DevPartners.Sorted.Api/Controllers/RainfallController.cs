@@ -2,14 +2,9 @@
 using DevPartners.Sorted.Application.Models;
 using DevPartners.Sorted.Application.Models.Errors;
 using DevPartners.Sorted.Application.Services;
-using DevPartners.Sorted.Core.Entities;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using static System.Net.WebRequestMethods;
 
 namespace DevPartners.Sorted.Api.Controllers;
 
