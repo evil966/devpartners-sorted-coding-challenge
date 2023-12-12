@@ -70,7 +70,7 @@ public class RainfallController : ControllerBase
 
 
         } 
-        catch (Exception ex)
+        catch (RainfallServiceException ex)
         {
             var error = ex.Message.Split('|');
 
@@ -82,6 +82,17 @@ public class RainfallController : ControllerBase
                             })
             { StatusCode = int.Parse(error[0]) };
         }
+        catch (Exception ex)
+        {
+            return new ObjectResult(
+                            new ErrorResponse
+                            {
+                                Message = ex.Message,
+                                Detail = new List<ErrorDetail>()
+                            })
+            { StatusCode = StatusCodes.Status500InternalServerError };
+        }
+
 
     }
 
