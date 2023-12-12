@@ -1,4 +1,4 @@
-﻿using DevPartners.Sorted.Api.Helpers;
+﻿using DevPartners.Sorted.Api.Configurations;
 using DevPartners.Sorted.Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;

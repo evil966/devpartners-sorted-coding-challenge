@@ -1,4 +1,4 @@
-﻿namespace DevPartners.Sorted.Api.Helpers;
+﻿namespace DevPartners.Sorted.Api.Configurations;
 
 public class RainfallApiEndpointSettings
 {

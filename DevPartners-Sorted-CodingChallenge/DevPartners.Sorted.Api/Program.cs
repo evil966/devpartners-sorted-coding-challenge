@@ -1,4 +1,4 @@
-using DevPartners.Sorted.Api.Helpers;
+using DevPartners.Sorted.Api.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
