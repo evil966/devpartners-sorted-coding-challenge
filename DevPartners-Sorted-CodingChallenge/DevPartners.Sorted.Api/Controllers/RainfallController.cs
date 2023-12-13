@@ -49,12 +49,12 @@ public class RainfallController : ControllerBase
                 throw new RainfallServiceException($"{rainfall.StatusCode}|{rainfall.Message}");
             }
 
-            if (rainfall.Readings.Items.Count() == 0)
+            if (rainfall.Readings?.Items?.Count() == 0)
             {
                 throw new RainfallServiceException($"{StatusCodes.Status404NotFound}|No readings found for the specified stationId");
             }
 
-            var rainfallReadings = rainfall.Readings.Items.Select(r =>
+            var rainfallReadings = rainfall.Readings?.Items?.Select(r =>
                 new RainfallReading
                 {
                     AmountMeasured = r.Value,
@@ -64,7 +64,7 @@ public class RainfallController : ControllerBase
             return new ObjectResult(
                         new RainfallReadingResponse
                         {
-                            Readings = rainfallReadings.ToList()
+                            Readings = rainfallReadings
                         })
             { StatusCode = StatusCodes.Status200OK };
 

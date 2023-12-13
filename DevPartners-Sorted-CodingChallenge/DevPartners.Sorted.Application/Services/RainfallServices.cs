@@ -1,7 +1,6 @@
 ﻿using DevPartners.Sorted.Application.Configurations;
 using DevPartners.Sorted.Application.Models;
 using DevPartners.Sorted.Core.Entities;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace DevPartners.Sorted.Application.Services;
