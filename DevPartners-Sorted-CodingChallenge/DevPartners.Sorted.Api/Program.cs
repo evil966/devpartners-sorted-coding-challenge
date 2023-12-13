@@ -1,8 +1,9 @@
 using DevPartners.Sorted.Api.Configurations;
+using DevPartners.Sorted.Application.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient("rainfallservice");
+builder.Services.AddHttpClient(RainfallServiceSettings.ServiceName);
 
 // Add services to the container.
 

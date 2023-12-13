@@ -1,4 +1,5 @@
-﻿using DevPartners.Sorted.Application.Models;
+﻿using DevPartners.Sorted.Application.Configurations;
+using DevPartners.Sorted.Application.Models;
 using DevPartners.Sorted.Core.Entities;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -16,7 +17,7 @@ public class RainfallServices : IRainfallServices
 
     public async Task<ApiCallResult> Get(Uri endpoint, int stationId, string count)
     {
-        var client = _client.CreateClient("rainfallservice");
+        var client = _client.CreateClient(RainfallServiceSettings.ServiceName);
         var response = await client.GetAsync($"{endpoint.AbsoluteUri}?_limit={count}");
         var result = new ApiCallResult { StatusCode = (int)response.StatusCode, Message = response.ReasonPhrase };
 
