@@ -7,12 +7,10 @@ public static class ScopedAndTransientServicesExtensions
 {
     public static void AddScopedAndTransientServices(this IServiceCollection services)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
+        ArgumentNullException.ThrowIfNull(services);
 
         services.AddScoped<IRainfallServices, RainfallServices>();
-        
+        services.AddProblemDetails();
+        services.AddExceptionHandler<GlobalExceptionHandler>();
     }
 }

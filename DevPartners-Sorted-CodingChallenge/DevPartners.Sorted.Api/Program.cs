@@ -41,9 +41,6 @@ builder.Services
             (builder.Configuration.GetSection("RainfallApiEndpointSettings"));
 
 builder.Services.AddScopedAndTransientServices();
-builder.Services.AddProblemDetails();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
 
 var app = builder.Build();
 
