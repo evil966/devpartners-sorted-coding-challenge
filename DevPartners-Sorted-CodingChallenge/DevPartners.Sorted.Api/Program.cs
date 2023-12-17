@@ -1,5 +1,4 @@
 using DevPartners.Sorted.Api.Configurations;
-using DevPartners.Sorted.Api.Middleware;
 using DevPartners.Sorted.Application.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);

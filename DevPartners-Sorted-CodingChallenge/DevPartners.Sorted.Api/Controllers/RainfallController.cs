@@ -57,10 +57,11 @@ public class RainfallController : ControllerBase
             return new ObjectResult(
                         new RainfallReadingResponse
                         {
-                            Readings = rainfallReadings
+                            Readings = rainfallReadings ?? Enumerable.Empty<RainfallReading>(),
                         })
             { StatusCode = StatusCodes.Status200OK };
     }
+
 }
 
 

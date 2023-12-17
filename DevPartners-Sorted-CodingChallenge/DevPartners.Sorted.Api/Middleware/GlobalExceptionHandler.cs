@@ -16,7 +16,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         CancellationToken cancellationToken
     )
     {
-        _logger.LogError(exception.Message);
+        _logger.LogError("{message}", exception.Message);
 
         await ExceptionHandler(httpContext, exception, cancellationToken);
 
@@ -55,10 +55,18 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
 
         if (exceptionType == typeof(BadHttpRequestException))
         {
+            var countParam = context.Request.Query["count"];
             errorObject = new ErrorResponse
             {
-                Message = exception.Message,
-                Detail = new List<ErrorDetail>()
+                Message = "One or more validation errors occurred.",
+                Detail = new List<ErrorDetail>
+                {
+                    new()
+                    {
+                        PropertyName = "count",
+                        Message = $"?count={countParam} should be an integer."
+                    }
+                }
             };
         }
 
