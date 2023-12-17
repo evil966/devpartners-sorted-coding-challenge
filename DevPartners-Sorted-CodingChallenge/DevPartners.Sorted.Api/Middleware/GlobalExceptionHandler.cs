@@ -55,7 +55,6 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
 
         if (exceptionType == typeof(BadHttpRequestException))
         {
-            var countParam = context.Request.Query["count"];
             errorObject = new ErrorResponse
             {
                 Message = "One or more validation errors occurred.",
@@ -64,10 +63,12 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
                     new()
                     {
                         PropertyName = "count",
-                        Message = $"?count={countParam} should be an integer."
+                        Message = $"Check the 'count' parameter if present or not a number."
                     }
                 }
             };
+
+            status = StatusCodes.Status400BadRequest;
         }
 
         context.Response.StatusCode = status;
