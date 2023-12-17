@@ -43,8 +43,7 @@ builder.Services.AddScopedAndTransientServices();
 
 var app = builder.Build();
 
-app.UseStatusCodePages();
-app.UseExceptionHandler();
+app.UseExceptionHandler(_ => { });
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

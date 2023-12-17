@@ -10,7 +10,6 @@ public static class ScopedAndTransientServicesExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddScoped<IRainfallServices, RainfallServices>();
-        services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();
     }
 }

@@ -54,12 +54,12 @@ public class RainfallController : ControllerBase
                     DateMeasured = r.DateTime
                 });
 
-            return new ObjectResult(
-                        new RainfallReadingResponse
-                        {
-                            Readings = rainfallReadings ?? Enumerable.Empty<RainfallReading>(),
-                        })
-            { StatusCode = StatusCodes.Status200OK };
+        return new ObjectResult(
+            new RainfallReadingResponse
+            {
+                Readings = rainfallReadings ?? Enumerable.Empty<RainfallReading>(),
+            })
+        { StatusCode = StatusCodes.Status200OK };
     }
 
 }
