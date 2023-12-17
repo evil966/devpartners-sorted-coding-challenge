@@ -14,7 +14,7 @@ public class RainfallServices : IRainfallServices
         _client = client;
     }
 
-    public async Task<ApiCallResult> Get(Uri endpoint, int stationId, string count)
+    public async Task<ApiCallResult> Get(Uri endpoint, int stationId, int count)
     {
         var client = _client.CreateClient(RainfallServiceSettings.ServiceName);
         var response = await client.GetAsync($"{endpoint.AbsoluteUri}?_limit={count}");

@@ -1,7 +1,8 @@
 @DevPartners.Sorted.Api_HostAddress = http://localhost:3000
 @stationid=3680
+@count=10
 
-GET {{DevPartners.Sorted.Api_HostAddress}}/rainfall/id/{{stationid}}/readings
+GET {{DevPartners.Sorted.Api_HostAddress}}/rainfall/id/{{stationid}}/readings?count={{count}}
 Accept: application/json
 
 ###

@@ -1,4 +1,5 @@
-﻿using DevPartners.Sorted.Application.Services;
+﻿using DevPartners.Sorted.Api.Middleware;
+using DevPartners.Sorted.Application.Services;
 
 namespace DevPartners.Sorted.Api.Configurations;
 
@@ -12,5 +13,6 @@ public static class ScopedAndTransientServicesExtensions
         }
 
         services.AddScoped<IRainfallServices, RainfallServices>();
+        
     }
 }

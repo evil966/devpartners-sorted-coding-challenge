@@ -1,7 +1,6 @@
 ﻿using DevPartners.Sorted.Api.Configurations;
 using DevPartners.Sorted.Application.Exceptions;
 using DevPartners.Sorted.Application.Models;
-using DevPartners.Sorted.Application.Models.Errors;
 using DevPartners.Sorted.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -37,24 +36,18 @@ public class RainfallController : ControllerBase
     [SwaggerResponse(400, "Invalid request", typeof(ErrorResponse))]
     [SwaggerResponse(404, "No readings found for the specified stationId", typeof(ErrorResponse))]
     [SwaggerResponse(500, "Internal server error", typeof(ErrorResponse))]
-    public async Task<IActionResult> Get(int stationId, [FromQuery] string count="10")
+    public async Task<IActionResult> Get(int stationId, [FromQuery] int count=10)
     {
-        try
+        var uri = new Uri(Settings.Url.Replace("$stationid", stationId.ToString()));
+        var rainfall = await _services.Get(uri, stationId, count);
+
+        if (rainfall.Readings?.Items?.Count() == 0)
         {
-            var uri = new Uri(Settings.Url.Replace("$stationid", stationId.ToString()));
-            var rainfall = await _services.Get(uri, stationId, count);
+            throw new RainfallService404Exception
+                ($"{StatusCodes.Status404NotFound}|No readings found for the specified stationId|{stationId}");
+        }
 
-            if (rainfall.StatusCode != StatusCodes.Status200OK)
-            {
-                throw new RainfallServiceException($"{rainfall.StatusCode}|{rainfall.Message}");
-            }
-
-            if (rainfall.Readings?.Items?.Count() == 0)
-            {
-                throw new RainfallServiceException($"{StatusCodes.Status404NotFound}|No readings found for the specified stationId");
-            }
-
-            var rainfallReadings = rainfall.Readings?.Items?.Select(r =>
+        var rainfallReadings = rainfall.Readings?.Items?.Select(r =>
                 new RainfallReading
                 {
                     AmountMeasured = r.Value,
@@ -67,35 +60,7 @@ public class RainfallController : ControllerBase
                             Readings = rainfallReadings
                         })
             { StatusCode = StatusCodes.Status200OK };
-
-
-        } 
-        catch (RainfallServiceException ex)
-        {
-            var error = ex.Message.Split('|');
-
-            return new ObjectResult(
-                            new ErrorResponse
-                            {
-                                Message = error[1],
-                                Detail = new List<ErrorDetail>()
-                            })
-            { StatusCode = int.Parse(error[0]) };
-        }
-        catch (Exception ex)
-        {
-            return new ObjectResult(
-                            new ErrorResponse
-                            {
-                                Message = ex.Message,
-                                Detail = new List<ErrorDetail>()
-                            })
-            { StatusCode = StatusCodes.Status500InternalServerError };
-        }
-
-
     }
-
 }
 
 

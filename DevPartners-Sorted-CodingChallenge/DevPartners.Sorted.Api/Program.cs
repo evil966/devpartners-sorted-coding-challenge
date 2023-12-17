@@ -1,4 +1,5 @@
 using DevPartners.Sorted.Api.Configurations;
+using DevPartners.Sorted.Api.Middleware;
 using DevPartners.Sorted.Application.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient(RainfallServiceSettings.ServiceName);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -40,7 +41,14 @@ builder.Services
             (builder.Configuration.GetSection("RainfallApiEndpointSettings"));
 
 builder.Services.AddScopedAndTransientServices();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+
 var app = builder.Build();
+
+app.UseStatusCodePages();
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
