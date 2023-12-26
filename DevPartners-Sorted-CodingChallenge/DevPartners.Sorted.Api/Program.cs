@@ -16,11 +16,19 @@ builder.Services.AddSwaggerGen(c =>
         new()
         {
             Title = "Rainfall Api",
-            Description = "An API which provides rainfall reading data",
+            Description = "### An API which provides rainfall reading data",
             Version = "1.0",
-            Contact = new() { Name = "Sorted", Url = new Uri($"https://www.sorted.com") }
+            Contact = new() 
+            { 
+                Name = "Sorted", 
+                Url = new Uri($"https://www.sorted.com") 
+            }
         });
-    c.AddServer(new() { Url = $"http://localhost:3000", Description = "Rainfall Api" });
+    c.AddServer(new() 
+        { 
+            Url = $"http://localhost:3000", 
+            Description = "Rainfall Api" 
+        });
     c.EnableAnnotations();
 });
 

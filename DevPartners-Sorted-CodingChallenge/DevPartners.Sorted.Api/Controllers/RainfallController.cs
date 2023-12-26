@@ -13,7 +13,7 @@ namespace DevPartners.Sorted.Api.Controllers;
 public class RainfallController : ControllerBase
 {
     private readonly IRainfallServices _services;
-    public RainfallApiEndpointSettings Settings { get; set; }
+    private readonly RainfallApiEndpointSettings _settings;
 
     public RainfallController
     (
@@ -21,7 +21,7 @@ public class RainfallController : ControllerBase
         IRainfallServices services
     )
     {
-        Settings = settings.Value;
+        _settings = settings.Value;
         _services = services;
     }
 
@@ -36,9 +36,9 @@ public class RainfallController : ControllerBase
     [SwaggerResponse(400, "Invalid request", typeof(ErrorResponse))]
     [SwaggerResponse(404, "No readings found for the specified stationId", typeof(ErrorResponse))]
     [SwaggerResponse(500, "Internal server error", typeof(ErrorResponse))]
-    public async Task<IActionResult> Get(int stationId, [FromQuery] int count=10)
+    public async Task<IActionResult> Get([FromRoute] int stationId, [FromQuery] int count=10)
     {
-        var uri = new Uri(Settings.Url.Replace("$stationid", stationId.ToString()));
+        var uri = new Uri(_settings.Url.Replace("$stationid", stationId.ToString()));
         var rainfall = await _services.Get(uri, stationId, count);
 
         if (rainfall.Readings?.Items?.Count() == 0)
