@@ -45,22 +45,25 @@ public class RainfallServices : IRainfallServices
         double minimumMeasurement = 0.0;
         double maximumMeasurement = 0.0;
         double meanMeasurement = 0.0;
+        int totalReadings = 0;
 
         var readings = await response.Content.ReadFromJsonAsync<Readings>();
-        int totalReadings = readings!.Items!.Count();
 
-        if (readings.Items != null && totalReadings > 0)
+        if (readings!.Items != null)
         {
             double sumOfMeasurements = 0;
-            foreach (var reading in readings.Items)
+
+            foreach (var value in readings.Items.Select(reading => reading.Value))
             {
-                var value = reading.Value;
                 minimumMeasurement = value < minimumMeasurement ? value : minimumMeasurement;
                 maximumMeasurement = value > maximumMeasurement ? value : maximumMeasurement;
                 sumOfMeasurements += value;
+                totalReadings++;
             }
 
-            meanMeasurement = sumOfMeasurements / totalReadings;
+            meanMeasurement = totalReadings > 0
+                    ? sumOfMeasurements / totalReadings
+                    : meanMeasurement;
         }
 
         result.StatusCode = (int)HttpStatusCode.OK;
