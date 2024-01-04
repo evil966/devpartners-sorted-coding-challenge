@@ -2,9 +2,7 @@
 
 namespace DevPartners.Sorted.Application.Models;
 
-public class ApiCallResult
+public class ApiCallResult : ApiCallBaseResult
 {
-    public int StatusCode { get; set; }
-    public string? Message { get; set; }
     public Readings? Readings { get; set; }
 }

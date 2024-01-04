@@ -62,6 +62,18 @@ public class RainfallController : ControllerBase
         { StatusCode = StatusCodes.Status200OK };
     }
 
+    [HttpGet("rainfall/{stationId}/readings/summary")]
+    public async Task<IActionResult> GetSummaryReading([FromRoute] int stationId, [FromQuery] int hours = 24)
+    {
+        var uri = new Uri(_settings.Url.Replace("$stationid", stationId.ToString()));
+        var rainfall = await _services.GetSummary(uri, stationId, hours);
+
+        return new ObjectResult(rainfall)   
+            { StatusCode = StatusCodes.Status200OK };
+    }
+
+
+
 }
 
 
