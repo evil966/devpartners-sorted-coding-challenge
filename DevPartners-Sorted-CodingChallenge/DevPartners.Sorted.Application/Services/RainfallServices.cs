@@ -6,15 +6,8 @@ using System.Net.Http.Json;
 
 namespace DevPartners.Sorted.Application.Services;
 
-public class RainfallServices : IRainfallServices
+public class RainfallServices(IHttpClientFactory httpClientFactory) : IRainfallServices
 {
-    private readonly IHttpClientFactory _client;
-
-    public RainfallServices(IHttpClientFactory client)
-    {
-        _client = client;
-    }
-
     public async Task<ApiCallResult> Get(Uri endpoint, int stationId, int count)
     {
         var response = await InvokeRainfallApiRequest(endpoint, $"_limit={count}");
@@ -82,7 +75,7 @@ public class RainfallServices : IRainfallServices
 
     private async Task<HttpResponseMessage> InvokeRainfallApiRequest(Uri endpoint, string queryParameters)
     {
-        var client = _client.CreateClient(RainfallServiceSettings.ServiceName);
+        var client = httpClientFactory.CreateClient(RainfallServiceSettings.ServiceName);
         var response = await client.GetAsync($"{endpoint.AbsoluteUri}?{queryParameters}");
 
         return response;

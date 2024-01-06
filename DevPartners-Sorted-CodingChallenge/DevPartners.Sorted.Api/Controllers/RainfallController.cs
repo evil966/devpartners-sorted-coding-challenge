@@ -10,20 +10,13 @@ namespace DevPartners.Sorted.Api.Controllers;
 
 [ApiController]
 [Produces("application/json")]
-public class RainfallController : ControllerBase
+public class RainfallController
+(
+    IOptions<RainfallApiEndpointSettings> settings,
+    IRainfallServices services
+) : ControllerBase
 {
-    private readonly IRainfallServices _services;
-    private readonly RainfallApiEndpointSettings _settings;
-
-    public RainfallController
-    (
-        IOptions<RainfallApiEndpointSettings> settings,
-        IRainfallServices services
-    )
-    {
-        _settings = settings.Value;
-        _services = services;
-    }
+    private readonly RainfallApiEndpointSettings _settings = settings.Value;
 
     [HttpGet("rainfall/id/{stationId}/readings")]
     [SwaggerOperation(   
@@ -39,7 +32,7 @@ public class RainfallController : ControllerBase
     public async Task<IActionResult> Get([FromRoute] int stationId, [FromQuery] int count=10)
     {
         var uri = new Uri(_settings.Url.Replace("$stationid", stationId.ToString()));
-        var rainfall = await _services.Get(uri, stationId, count);
+        var rainfall = await services.Get(uri, stationId, count);
 
         if (rainfall.Readings?.Items?.Count() == 0)
         {
@@ -66,7 +59,7 @@ public class RainfallController : ControllerBase
     public async Task<IActionResult> GetSummaryReading([FromRoute] int stationId, [FromQuery] int hours = 24)
     {
         var uri = new Uri(_settings.Url.Replace("$stationid", stationId.ToString()));
-        var rainfall = await _services.GetSummary(uri, stationId, hours);
+        var rainfall = await services.GetSummary(uri, stationId, hours);
 
         return new ObjectResult(rainfall)   
             { StatusCode = StatusCodes.Status200OK };
